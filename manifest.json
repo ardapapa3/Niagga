@@ -1,0 +1,17 @@
+{
+  "name": "Ayarlar",
+  "short_name": "Ayarlar",
+  "description": "Ayarlar",
+  "start_url": "./index.html",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' fill='%23000'/><text y='130' x='40' font-size='120' font-family='sans-serif'>⚙️</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    }
+  ]
+}
