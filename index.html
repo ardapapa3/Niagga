@@ -453,4 +453,388 @@
                 <div class="settings-text"><div class="settings-title">Sistem</div></div>
                 <span class="material-icons" style="color:#888;">chevron_right</span>
             </div>
-            <div c
+            <div class="settings-item" data-keywords="telefon hakkında cihaz ram imei">
+                <div class="settings-icon bg-grey"><span class="material-icons">info</span></div>
+                <div class="settings-text"><div class="settings-title">Telefon hakkında</div></div>
+                <span class="material-icons" style="color:#888;">chevron_right</span>
+            </div>
+        </div>
+
+        <!-- Block 7 -->
+        <div class="settings-block border-bottom:0;">
+            <div class="settings-item" onclick="switchView('mainView')" data-keywords="dijital denge ebeveyn denetimleri süre kısıtlama odak">
+                <div class="settings-icon bg-orange"><span class="material-icons">favorite</span></div>
+                <div class="settings-text"><div class="settings-title">Dijital Denge ve ebeveyn<br>denetimleri</div></div>
+                <span class="material-icons" style="color:#888;">chevron_right</span>
+            </div>
+            <div class="settings-item" data-keywords="google hesap servisler">
+                <div class="settings-icon bg-green"><span class="material-icons">g_translate</span></div>
+                <div class="settings-text"><div class="settings-title">Google</div></div>
+                <span class="material-icons" style="color:#888;">chevron_right</span>
+            </div>
+        </div>
+        
+        <div style="height:40px;"></div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <div class="bottom-nav">
+        <div class="nav-btn"><span class="material-icons">check_box_outline_blank</span></div>
+        <div class="nav-btn"><svg viewBox="0 0 24 24" width="24" height="24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-2-12.5v9l6-4.5-6-4.5z" opacity="0"/></svg> <span class="material-icons" style="font-size:32px;">minimize</span></div>
+        <div class="nav-btn"><span class="material-icons">arrow_back_ios</span></div>
+    </div>
+</div>
+
+
+<!-- MAIN VIEW (Dijital Denge) -->
+<div id="mainView" class="view-container denge-content">
+
+
+    <div class="header denge-content">
+        <button class="icon-btn" onclick="switchView('rootSettingsView')"><span class="material-icons">arrow_back</span></button>
+        <h1 style="font-size: 20px;">Dijital Denge ve ebeveyn...</h1>
+        <button class="icon-btn" onclick="openPassword()"><span class="material-icons">more_vert</span></button>
+    </div>
+
+    <div class="content">
+        <div class="section-title">
+            <span class="material-icons">insert_chart</span> 
+            <span>Dijital Denge araçlarınız</span>
+        </div>
+
+        <div class="chart-container">
+            <svg width="240" height="240" viewBox="0 0 240 240">
+                <circle cx="120" cy="120" r="100" fill="none" stroke="#222" stroke-width="12" />
+                <circle cx="120" cy="120" r="100" fill="none" stroke="#0f9d58" stroke-width="12" stroke-dasharray="628" stroke-dashoffset="560" transform="rotate(-180 120 120)" />
+                <circle cx="120" cy="120" r="100" fill="none" stroke="#f4b400" stroke-width="12" stroke-dasharray="628" stroke-dashoffset="540" transform="rotate(-140 120 120)" />
+                <circle cx="120" cy="120" r="100" fill="none" stroke="#db4437" stroke-width="12" stroke-dasharray="628" stroke-dashoffset="400" transform="rotate(-60 120 120)" />
+                <circle cx="120" cy="120" r="100" fill="none" stroke="#4285f4" stroke-width="12" stroke-dasharray="628" stroke-dashoffset="350" transform="rotate(40 120 120)" />
+                <circle cx="120" cy="120" r="100" fill="none" stroke="#ab47bc" stroke-width="12" stroke-dasharray="628" stroke-dashoffset="500" transform="rotate(-230 120 120)" />
+            </svg>
+            <div class="chart-center">
+                <div class="today">BUGÜN</div>
+                <div class="time" id="totalTimeDisplay">8 sa. 3 dk.</div>
+            </div>
+            
+            <div style="position:absolute; top: -10px; left: 60px; color:#ab47bc; font-size:12px;">Diğer</div>
+            <div style="position:absolute; top: 110px; left: -20px; color:#0f9d58; font-size:12px;">Google</div>
+            <div style="position:absolute; top: 155px; left: -20px; color:#f4b400; font-size:12px;">CapCut</div>
+            <div style="position:absolute; top: 225px; left: 55px; color:#db4437; font-size:12px;">AnimeciX</div>
+            <div style="position:absolute; top: 120px; right: -30px; color:#4285f4; font-size:12px;">Instagr...</div>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-item">
+                <div class="stat-number">51</div>
+                <div class="stat-label">Kilit açma</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">68</div>
+                <div class="stat-label">Bildirim</div>
+            </div>
+        </div>
+
+        <div class="list-item list-item-large" onclick="switchView('detailsView')">
+            <div class="list-item-content">
+                <div class="title" style="color: #a8c7fa;">Uygulama etkinliği ayrıntılarını göster</div>
+            </div>
+        </div>
+
+        <div class="section-header">Telefonla ilişkinizi kesmenin yolları</div>
+        
+        <div class="list-item">
+            <div class="list-item-content">
+                <div class="title">Uygulama zamanlayıcıları</div>
+                <div class="subtitle">Süre ölçerler ayarlanmadı</div>
+            </div>
+        </div>
+
+        <div class="list-item">
+            <div class="list-item-content">
+                <div class="title">Uyku Vakti modu</div>
+                <div class="subtitle">Ayarlamak için dokunun</div>
+            </div>
+        </div>
+
+        <div class="list-item">
+            <div class="list-item-content">
+                <div class="title">Konsantrasyon</div>
+                <div class="subtitle">Ayarlamak için dokunun</div>
+            </div>
+        </div>
+        <div style="height:40px;"></div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <div class="bottom-nav">
+        <div class="nav-btn"><span class="material-icons">check_box_outline_blank</span></div>
+        <div class="nav-btn" onclick="switchView('rootSettingsView')"><svg viewBox="0 0 24 24" width="24" height="24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-2-12.5v9l6-4.5-6-4.5z" opacity="0"/></svg> <span class="material-icons" style="font-size:32px;">minimize</span></div>
+        <div class="nav-btn" onclick="switchView('rootSettingsView')"><span class="material-icons">arrow_back_ios</span></div>
+    </div>
+</div>
+
+
+<!-- DETAILS VIEW -->
+<div id="detailsView" class="view-container denge-content">
+
+
+    <div class="header denge-content">
+        <button class="icon-btn" onclick="switchView('mainView')"><span class="material-icons">arrow_back</span></button>
+        <div style="flex-grow: 1;"></div>
+        <button class="icon-btn" onclick="openPassword()"><span class="material-icons">more_vert</span></button>
+    </div>
+    
+    <div class="header large-title denge-content" style="padding-top: 0;">
+        <h1>Uygulama etkinliği<br>ayrıntıları</h1>
+    </div>
+
+    <div class="content">
+        <div style="text-align:center; margin-top:20px;">
+            <button style="background:#4b3f5c; border:none; color:#fff; padding:10px 16px; border-radius:20px; font-size:14px; font-family:'Roboto'; display:inline-flex; align-items:center; gap:8px;">
+                Ekran başında kalma süresi <span class="material-icons" style="font-size:16px;">arrow_drop_down</span>
+            </button>
+        </div>
+
+        <div class="bar-chart">
+            <div class="bar faded" style="height: 100%;"></div>
+            <div class="bar faded" style="height: 80%;"></div>
+            <div class="bar faded" style="height: 110%;"></div>
+            <div class="bar faded" style="height: 90%;"></div>
+            <div class="bar faded" style="height: 85%;"></div>
+            <div class="bar" style="height: 95%;"></div>
+            <div class="bar faded" style="height: 20%; visibility:hidden;"></div>
+            
+            <div style="position: absolute; right: 8px; bottom: 0; font-size:12px; color:#b0b0b0; display:flex; flex-direction:column; height:100%; justify-content:space-between;">
+                <span>12s</span><span>9s</span><span>6s</span><span>3s</span><span>0s</span>
+            </div>
+            
+            <div style="position:absolute; bottom:0; left:24px; right:32px; height:1px; background:rgba(255,255,255,0.2);"></div>
+            <div style="position:absolute; bottom:30px; left:24px; right:32px; height:1px; background:rgba(255,255,255,0.2);"></div>
+            <div style="position:absolute; bottom:60px; left:24px; right:32px; height:1px; background:rgba(255,255,255,0.2);"></div>
+            <div style="position:absolute; bottom:90px; left:24px; right:32px; height:1px; background:rgba(255,255,255,0.2);"></div>
+            <div style="position:absolute; bottom:120px; left:24px; right:32px; height:1px; background:rgba(255,255,255,0.2);"></div>
+        </div>
+        <div class="bar-labels">
+            <span>Pzt</span><span>Sal</span><span>Çar</span><span>Per</span><span>Cum</span><span style="color:#fff;">Cmt</span><span>Paz</span>
+        </div>
+
+        <div style="text-align:center; color:#d1d1d1; margin-bottom:16px; font-size:14px; display:flex; align-items:center; justify-content:center; gap:16px;">
+            <span class="material-icons" style="font-size:16px; color:#888;">arrow_back_ios</span>
+            <span id="currentDateDisplay">18 Nisan Cmt</span>
+            <span class="material-icons" style="font-size:16px; color:#333;">arrow_forward_ios</span>
+        </div>
+
+        <div id="appList"></div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <div class="bottom-nav">
+        <div class="nav-btn"><span class="material-icons">check_box_outline_blank</span></div>
+        <div class="nav-btn" onclick="switchView('rootSettingsView')"><svg viewBox="0 0 24 24" width="24" height="24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-2-12.5v9l6-4.5-6-4.5z" opacity="0"/></svg> <span class="material-icons" style="font-size:32px;">minimize</span></div>
+        <div class="nav-btn" onclick="switchView('mainView')"><span class="material-icons">arrow_back_ios</span></div>
+    </div>
+</div>
+
+<!-- Password Overlay -->
+<div class="overlay" id="passOverlay">
+    <div class="modal">
+        <h2>Şifre Girin</h2>
+        <input type="password" id="passInput" placeholder="Şifre...">
+        <div class="modal-buttons">
+            <button class="modal-btn" onclick="closeOverlay('passOverlay')">İptal</button>
+            <button class="modal-btn primary" onclick="checkPassword()">Tamam</button>
+        </div>
+    </div>
+</div>
+
+<!-- Admin Overlay -->
+<div class="overlay" id="adminOverlay">
+    <div class="modal">
+        <h2>Süreleri Ayarla</h2>
+        
+        <div class="admin-app-item-header">Ana Ekran Toplam Süre</div>
+        <input type="text" id="adminTotalTime">
+        
+        <div class="admin-app-item-header" style="margin-top:12px; margin-bottom:8px;">Uygulama Süreleri</div>
+        <div class="admin-apps" id="adminAppsList"></div>
+
+        <div class="modal-buttons">
+            <button class="modal-btn" onclick="closeOverlay('adminOverlay')">İptal</button>
+            <button class="modal-btn primary" onclick="saveAdmin()">Kaydet</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateClock() {
+        const now = new Date();
+        const mins = now.getMinutes().toString().padStart(2, '0');
+        const hrs = now.getHours().toString().padStart(2, '0');
+        document.querySelectorAll('.clock').forEach(el => el.innerText = `${hrs}:${mins}`);
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    function setDate() {
+        const months = ["Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem", "Ağu", "Eyl", "Eki", "Kas", "Ara"];
+        const days = ["Paz", "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt"];
+        const date = new Date();
+        document.getElementById("currentDateDisplay").innerText = `${date.getDate()} ${months[date.getMonth()]} ${days[date.getDay()]}`;
+    }
+    setDate();
+
+    function filterSettings() {
+        const input = document.getElementById('settingsSearch').value.toLowerCase();
+        const items = document.querySelectorAll('.settings-item');
+        
+        items.forEach(item => {
+            const keys = item.getAttribute('data-keywords') || "";
+            const title = item.querySelector('.settings-title')?.innerText.toLowerCase() || "";
+            if (keys.includes(input) || title.includes(input)) {
+                item.style.display = "flex";
+            } else {
+                item.style.display = "none";
+            }
+        });
+
+        // Hide empty blocks
+        const blocks = document.querySelectorAll('.settings-block');
+        blocks.forEach(block => {
+            let hasVisibleItem = false;
+            const blockItems = block.querySelectorAll('.settings-item');
+            if (blockItems.length === 0) return; // Top block without items
+            
+            blockItems.forEach(i => {
+                if(i.style.display !== 'none') hasVisibleItem = true;
+            });
+            block.style.display = hasVisibleItem ? "block" : "none";
+        });
+    }
+
+    let state = {
+        totalTime: "8 sa. 3 dk.",
+        apps: [
+            { id: 'instagram', name: 'Instagram', time: '2 sa. 59 dk.', color: '#E1306C', initial: 'I' },
+            { id: 'animecix', name: 'AnimeciX', time: '2 sa. 30 dk.', color: '#2b2b2b', initial: 'A' },
+            { id: 'capcut', name: 'CapCut', time: '37 dakika', color: '#000000', initial: 'C' },
+            { id: 'google', name: 'Google', time: '26 dakika', color: '#4285F4', initial: 'G' },
+            { id: 'chrome', name: 'Chrome', time: '1 sa. 20 dk.', color: '#F4B400', initial: 'C' },
+            { id: 'chatgpt', name: 'ChatGPT', time: '15 dakika', color: '#10A37F', initial: 'C' },
+            { id: 'telefon', name: 'Telefon', time: '14 dakika', color: '#0066cc', initial: 'T' },
+            { id: 'whatsapp', name: 'WhatsApp', time: '12 dakika', color: '#25D366', initial: 'W' },
+        ]
+    };
+
+    function loadState() {
+        const saved = localStorage.getItem('dijitalDengeState');
+        if (saved) {
+            try { state = JSON.parse(saved); } catch(e) {}
+        }
+        renderApps();
+        document.getElementById('totalTimeDisplay').innerText = state.totalTime;
+    }
+    
+    function saveState() {
+        localStorage.setItem('dijitalDengeState', JSON.stringify(state));
+    }
+
+    function switchView(viewId) {
+        document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active'));
+        document.getElementById(viewId).classList.add('active');
+        window.scrollTo(0,0);
+        document.getElementById('settingsSearch').value = '';
+        filterSettings(); // reset search
+    }
+
+    function renderApps() {
+        const appList = document.getElementById('appList');
+        appList.innerHTML = '';
+        state.apps.forEach(app => {
+            appList.innerHTML += `
+            <div class="list-item">
+                <div class="app-icon" style="background-color: ${app.color};">
+                    ${app.initial}
+                </div>
+                <div class="list-item-content">
+                    <div class="title">${app.name}</div>
+                    <div class="subtitle">${app.time}</div>
+                </div>
+                <span class="material-icons" style="color:#b0b0b0; border-left:1px solid #333; padding-left:16px;">hourglass_empty</span>
+            </div>
+            `;
+        });
+    }
+
+    function openPassword() {
+        document.getElementById('passInput').value = '';
+        document.getElementById('passOverlay').style.display = 'flex';
+        setTimeout(() => document.getElementById('passInput').focus(), 100);
+    }
+
+    function closeOverlay(id) {
+        document.getElementById(id).style.display = 'none';
+        if (id === 'passOverlay') {
+            document.getElementById('passInput').blur();
+        }
+    }
+
+    function checkPassword() {
+        const pass = document.getElementById('passInput').value;
+        if (pass.toLowerCase() === 'capcuklar') {
+            closeOverlay('passOverlay');
+            openAdmin();
+        } else {
+            alert('Yanlış şifre!');
+        }
+    }
+
+    // Add enter key listener for password
+    document.getElementById('passInput').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            checkPassword();
+        }
+    });
+
+    function openAdmin() {
+        document.getElementById('adminTotalTime').value = state.totalTime;
+        
+        const adminAppsList = document.getElementById('adminAppsList');
+        adminAppsList.innerHTML = '';
+        
+        state.apps.forEach((app, index) => {
+            adminAppsList.innerHTML += `
+            <div class="admin-app-item">
+                <div style="font-size:14px; margin-bottom:4px;">${app.name}</div>
+                <input type="text" id="adminApp_${index}" value="${app.time}">
+            </div>
+            `;
+        });
+
+        document.getElementById('adminOverlay').style.display = 'flex';
+    }
+
+    function saveAdmin() {
+        state.totalTime = document.getElementById('adminTotalTime').value;
+        document.getElementById('totalTimeDisplay').innerText = state.totalTime;
+        
+        state.apps.forEach((app, index) => {
+            const input = document.getElementById(`adminApp_${index}`);
+            if (input) {
+                app.time = input.value;
+            }
+        });
+
+        saveState();
+        renderApps();
+        closeOverlay('adminOverlay');
+        const btn = document.querySelector('#adminOverlay .modal-btn.primary');
+        const oldText = btn.innerText;
+        btn.innerText = 'Kaydedildi!';
+        setTimeout(() => btn.innerText = oldText, 2000);
+    }
+
+    // Initialize
+    loadState();
+</script>
+</body>
+</html>
