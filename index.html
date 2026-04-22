@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ayarlar</title>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Ayarlar">
+    <meta name="theme-color" content="#000000">
+    <link rel="manifest" href="manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Roboto', sans-serif; background: #000; color: #fff; display: flex; justify-content: center; height: 100vh; overflow: hidden; padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
+        .view-container { width: 100%; max-width: 450px; height: 100%; display: none; flex-direction: column; background: #000; position: relative; }
+        .view-container.active { display: flex; }
+        .denge-bg { background: #0d0d18; }
+
+        /* Header */
+        .header { display: flex; align-items: center; padding: 14px 16px; gap: 12px; }
+        .header h1 { font-size: 20px; font-weight: 400; flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .large-header { padding: 16px 24px 8px 24px; }
+        .large-header h1 { font-size: 34px; font-weight: 400; line-height: 1.15; }
+        .icon-btn { background: none; border: none; color: #fff; padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+        .icon-btn:active { background: rgba(255,255,255,0.12); }
+
+        .content { flex-grow: 1; overflow-y: auto; scrollbar-width: none; }
+        .content::-webkit-scrollbar { display: none; }
+
+        /* Search */
+        .search-wrap { padding: 0 16px 12px; }
+        .search-bar { display: flex; align-items: center; background: #1e1e1e; border-radius: 28px; padding: 10px 18px; gap: 12px; }
+        .search-bar input { background: none; border: none; color: #fff; font-size: 16px; flex-grow: 1; outline: none; font-family: 'Roboto'; }
+        .search-bar input::placeholder { color: #777; }
+
+        /* Profile */
+        .profile-card { background: #1a1a2e; border-radius: 16px; margin: 4px 16px 12px; padding: 16px; display: flex; align-items: center; gap: 14px; cursor: pointer; }
+        .profile-card:active { background: #222240; }
+        .profile-avatar { width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #4285f4, #34a853); display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; flex-shrink: 0; }
+        .profile-name { font-size: 15px; font-weight: 500; margin-bottom: 2px; }
+        .profile-email { font-size: 13px; color: #888; }
+
+        /* Settings Block */
+        .sblock { background: #111; border-radius: 16px; margin: 0 16px 10px; overflow: hidden; }
+        .sitem { display: flex; align-items: center; padding: 13px 16px; cursor: pointer; position: relative; }
+        .sitem:active { background: rgba(255,255,255,0.06); }
+        .sitem:not(:last-child)::after { content: ''; position: absolute; bottom: 0; left: 62px; right: 0; height: 1px; background: #1e1e1e; }
+        .sicon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 14px; flex-shrink: 0; }
+        .sicon .material-icons { font-size: 19px; color: #fff; }
+        .stext { flex-grow: 1; }
+        .stitle { font-size: 15px; color: #fff; }
+        .ssub { font-size: 12px; color: #777; margin-top: 1px; }
+        .sval { font-size: 13px; color: #777; margin-right: 6px; text-align: right; max-width: 110px; line-height: 1.3; }
+        .sarrow { color: #555; font-size: 20px !important; flex-shrink: 0; }
+
+        .bg-blue{background:#1565c0} .bg-cyan{background:#00838f} .bg-purple{background:#6a1b9a}
+        .bg-orange{background:#e65100} .bg-green{background:#2e7d32} .bg-red{background:#c62828}
+        .bg-yellow{background:#f57f17} .bg-grey{background:#546e7a} .bg-pink{background:#ad1457}
+        .bg-teal{background:#00695c} .bg-indigo{background:#283593} .bg-brown{background:#4e342e}
+
+        /* === DENGE EKRANI === */
+        .denge-section { padding: 0 24px; margin-top: 12px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; font-size: 14px; color: #bbb; }
+        .donut-wrap { display: flex; justify-content: center; align-items: center; position: relative; margin: 8px 0 4px; }
+        .donut-center { position: absolute; text-align: center; }
+        .donut-label { font-size: 11px; color: #aaa; letter-spacing: 1.5px; font-weight: 500; }
+        .donut-time { font-size: 28px; font-weight: 300; }
+        .donut-app-label { position: absolute; font-size: 12px; }
+
+        .stats-row { display: flex; justify-content: center; gap: 0; margin: 8px 0 4px; }
+        .stat-box { flex: 1; text-align: center; padding: 12px 0; border-right: 1px solid #222; }
+        .stat-box:last-child { border-right: none; }
+        .stat-num { font-size: 26px; font-weight: 300; }
+        .stat-lbl { font-size: 13px; color: #aaa; margin-top: 2px; }
+
+        .denge-link { display: flex; align-items: center; padding: 18px 24px; border-top: 1px solid #1a1a1a; border-bottom: 1px solid #1a1a1a; cursor: pointer; margin: 4px 0; }
+        .denge-link:active { background: rgba(255,255,255,0.04); }
+        .denge-link-text { font-size: 17px; color: #a8c7fa; flex-grow: 1; }
+        .section-hdr { color: #a8c7fa; font-size: 13px; font-weight: 500; padding: 14px 24px 4px; }
+        .denge-item { display: flex; align-items: center; padding: 14px 24px; border-bottom: 1px solid #1a1a1a; cursor: pointer; gap: 14px; }
+        .denge-item:active { background: rgba(255,255,255,0.04); }
+        .denge-item-text { flex-grow: 1; }
+        .denge-item-title { font-size: 15px; }
+        .denge-item-sub { font-size: 13px; color: #777; margin-top: 2px; }
+
+        /* === DETAILS EKRANI === */
+        .details-time-big { font-size: 42px; font-weight: 300; padding: 0 24px; margin-top: 8px; }
+        .details-time-label { font-size: 14px; color: #aaa; padding: 0 24px; margin-bottom: 16px; }
+
+        .filter-btn { display: inline-flex; align-items: center; gap: 6px; background: #2d2050; border: none; color: #fff; padding: 10px 20px; border-radius: 24px; font-size: 14px; font-family: 'Roboto'; cursor: pointer; margin: 0 24px 16px; }
+
+        /* Bar Chart */
+        .bar-chart-wrap { padding: 0 20px; margin-bottom: 4px; }
+        .chart-grid { position: relative; height: 120px; margin-bottom: 0; }
+        .grid-line { position: absolute; left: 0; right: 0; height: 1px; background: rgba(255,255,255,0.1); }
+        .grid-label { position: absolute; right: 0; font-size: 11px; color: #666; transform: translateY(-50%); }
+        .bars-row { display: flex; align-items: flex-end; height: 120px; gap: 6px; padding: 0 32px 0 0; }
+        .bar-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
+        .bar-fill { width: 100%; border-radius: 3px 3px 0 0; min-height: 2px; transition: all 0.3s; }
+        .bar-fill.active-bar { background: #fff !important; }
+        .bar-fill.faded-bar { background: rgba(180,170,220,0.5); }
+        .bar-fill.future-bar { background: transparent; }
+        .bar-day { font-size: 11px; color: #777; }
+        .bar-day.active-day { color: #fff; font-weight: 500; }
+
+        /* Day nav */
+        .day-nav { display: flex; align-items: center; justify-content: center; gap: 20px; padding: 12px 0 8px; border-top: 1px solid #1a1a1a; }
+        .day-nav-btn { background: none; border: none; color: #aaa; display: flex; align-items: center; cursor: pointer; padding: 4px; font-size: 14px; }
+        .day-nav-btn:disabled { color: #333; }
+        .day-nav-text { font-size: 15px; color: #fff; min-width: 160px; text-align: center; }
+
+        /* App list */
+        .app-list-item { display: flex; align-items: center; padding: 14px 20px; border-bottom: 1px solid #1a1a1a; gap: 14px; }
+        .app-list-item:active { background: rgba(255,255,255,0.04); }
+        .app-real-icon { width: 44px; height: 44px; border-radius: 12px; overflow: hidden; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .app-real-icon img { width: 100%; height: 100%; object-fit: cover; }
+        .app-info { flex-grow: 1; }
+        .app-name { font-size: 16px; font-weight: 400; }
+        .app-time { font-size: 14px; color: #aaa; margin-top: 2px; }
+        .timer-icon { color: #555; font-size: 22px !important; border-left: 1px solid #222; padding-left: 14px; }
+
+        /* Overlay */
+        .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(6px); }
+        .modal { background: #1e1e1e; padding: 24px; border-radius: 20px; width: 88%; max-width: 340px; border: 1px solid #2a2a2a; max-height: 80vh; display: flex; flex-direction: column; }
+        .modal h2 { font-size: 17px; margin-bottom: 16px; font-weight: 500; }
+        .modal input[type=password], .modal input[type=text] { width: 100%; padding: 12px 14px; background: #2a2a2a; border: 1px solid #3a3a3a; color: #fff; border-radius: 10px; margin-bottom: 12px; font-size: 16px; outline: none; font-family: 'Roboto'; }
+        .modal-btns { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; flex-shrink: 0; }
+        .mbtn { padding: 9px 18px; background: transparent; border: none; color: #a8c7fa; font-size: 14px; font-weight: 500; cursor: pointer; border-radius: 8px; }
+        .mbtn:active { background: rgba(168,199,250,0.1); }
+        .mbtn.primary { background: #1a3a6b; }
+        .admin-scroll { overflow-y: auto; flex-grow: 1; margin-bottom: 8px; }
+        .admin-row { margin-bottom: 10px; border-bottom: 1px solid #2a2a2a; padding-bottom: 8px; }
+        .admin-row label { font-size: 13px; color: #ccc; display: block; margin-bottom: 4px; }
+
+        /* Toast */
+        #toast { position: fixed; bottom: 72px; left: 50%; transform: translateX(-50%); background: #2a2a2a; color: #fff; padding: 10px 22px; border-radius: 24px; font-size: 14px; display: none; z-index: 2000; white-space: nowrap; box-shadow: 0 4px 16px rgba(0,0,0,0.5); }
+
+        /* Bottom nav hidden */
+        .bottom-nav, .nav-btn { display: none; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<!-- ========== ANA AYARLAR ========== -->
+<div id="viewSettings" class="view-container active">
+    <div class="header large-header" style="background:#000;">
+        <h1>Ayarlar</h1>
+        <button class="icon-btn"><span class="material-icons">account_circle</span></button>
+    </div>
+    <div class="search-wrap">
+        <div class="search-bar">
+            <span class="material-icons" style="color:#777;font-size:20px;">search</span>
+            <input type="text" id="settingsSearch" placeholder="Ayarlarda arayın" onkeyup="filterSettings()">
+        </div>
+    </div>
+    <div class="content" id="settingsList">
+        <!-- Google Hesap -->
+        <div class="profile-card" onclick="toast('Google hesabı')">
+            <div class="profile-avatar">A</div>
+            <div>
+                <div class="profile-name">Arda</div>
+                <div class="profile-email">ardapapa3@gmail.com</div>
+            </div>
+            <span class="material-icons" style="color:#555;margin-left:auto;">chevron_right</span>
+        </div>
+
+        <!-- Hızlı -->
+        <div class="sblock" style="display:flex;padding:13px 18px;align-items:center;justify-content:space-between;">
+            <div style="display:flex;gap:20px;">
+                <span class="material-icons" style="color:#ccc;font-size:22px;">mail_outline</span>
+                <span class="material-icons" style="color:#ccc;font-size:22px;">dark_mode</span>
+            </div>
+            <span class="material-icons" style="color:#666;">keyboard_arrow_down</span>
+        </div>
+
+        <!-- Ağ -->
+        <div class="sblock">
+            <div class="sitem" data-kw="kablosuz wifi" onclick="toast('Kablosuz')">
+                <div class="sicon bg-blue"><span class="material-icons">wifi</span></div>
+                <div class="stext"><div class="stitle">Kablosuz</div><div class="ssub">TurkTelekom_TP53B8_5GHz</div></div>
+                <span class="material-icons sarrow">chevron_right</span>
+            </div>
+            <div class="sitem" data-kw="bağlı cihazlar bluetooth" onclick="toast('Bağlı cihazlar')">
+                <div class="sicon bg-cyan"><span class="material-icons">devices</span></div>
+                <div class="stext"><div class="stitle">Bağlı cihazlar</div></div>
+                <span class="material-icons sarrow">chevron_right</span>
+            </div>
+            <div class="sitem" data-kw="android auto" onclick="toast('Android Auto')">
+                <div class="sicon bg-purple"><span class="material-icons">directions_car</span></div>
+                <div class="stext"><div class="stitle">Android Auto</div></div>
+                <span class="material-icons sarrow">chevron_right</span>
+            </div>
+            <div class="sitem" data-kw="sim kart" onclick="toast('SIM kartlar')">
+                <div class="sicon bg-orange"><span class="material-icons">sim_card</span></div>
+                <div class="stext"><div class="stitle">SIM kartlar</div></div>
+                <span class="material-icons sarrow">chevron_right</span>
+            </div>
+            <div class="sitem" data-kw="mobil ağ vodafone" onclick="toast('Mobil ağ')">
+                <div class="sicon bg-green"><span class="material-icons">swap_vert</span></div>
+                <div class="stext"><div class="stitle">Mobil ağ</div></div>
+                <div class="sval">Vodafone TR</div>
+                <span class="material-icons sarrow">chevron_right</span>
+            </div>
+            <div class="sitem" data-kw="hotspot paylaşım" onclick="toast('İnternet paylaşımı')">
+                <div class="sicon bg-red"><span class="material-icons">wifi_tethering</span></div>
+                <div class="stext"><div class="stitle">İnternet paylaşımı ve...</div><div class="ssub">Bağlantı noktası</div></div>
+                <div class="sval">Kapalı</div>
+                <span class="material-icons sarrow">chevron_right</span>
+            </div>
+            <div class="sitem" data-kw="vpn dns diğer ağ" onclick="toast('Diğer ağ ayarları')">
+                <div class="sicon bg-yellow"><span class="material-icons">link</span></div>
+                <div class="stext"><div class="stitle">Diğer ağ ayarları</div></div>
+                <span class="material-icons sarrow">chevron_right</span>
+            </div>
+        </div>
+
+        <!-- Ekran -->
+        <div class="sblock">
+            <div class="sitem" data-kw="ekran parlaklık" onclick="toast('Ekran')">
+                <div class="sicon bg-blue"><span class="material-icons">light_mode</span></div>
+                <div class="stext"><div class="stitle">Ekran</div></div>
+                <span class="material-icons sarrow">chevron_right</span>
+            </div>
+            <div class="sitem" data-kw="kişiselleştirme duvar tema" onclick="toast('Kişiselleştirme')">
+                <div class="sicon bg-pink"><span class="material-icons">palette</span></div>
+                <div class="stext"><div class="stitle">Kişiselleştirme</div></div>
+                <span class="material-icons sarrow">chevron_right</span>
+            </div>
+            <div class="sitem" data-kw="ana ekran" onclick="toast('Ana ekran')">
+                <div class="sicon bg-teal"><span class="material-icons">home</span></div>
+                <div class="stext"><div class="stitle">Ana ekran</div></div>
+                <span class="material-icons sarrow">chevron_right</span>
+            </div>
+        </div>
+
+        <!-- Ses & Bildirim -->
+        <div class="sblock">
+            <div class="sitem" data-kw="ses zil titreşim" onclick="toast('Ses ve titreşim')">
+                <div class="sicon bg-orange"><span class="material-icons">volume_up</span></div>
+                <div class="stext"><div class="stitle">Ses ve titreşim</div><div class="ssub">Zil: Yüksek</div></div>
+                <span class="material-icons sarrow">chevron_right</span>
+            </div>
+            <div class="sitem" data-kw="bildirim" onclick="toast('Bildirimler')">
+                <div class="sicon bg-red"><span class="material-icons">notifications</span></div>
+                <div class="stext"><div class="stitle">Bildirimler</div></div>
+                <span class="material-icons sarrow">chevron_right</span>
+            </div>
+        </div>
+
+        <!-- Pil & Depolama -->
+        <div class="sblock">
+            <div class="sitem" data-kw="pil batarya şarj" onclick="toast('Pil')">
+                <div class="sicon bg-green"><span class="material-icons">battery_charging_full</span></div>
+                <div class="stext"><div class="stitle">Pil</div><div class="ssub">%43 · Şarj oluyor</div></div>
+                <span class="material-icons sarrow">chevron_right</span>
+            </div>
+            <div class="sitem" data-kw="depolama hafıza" onclick="toast('Depolama')">
+                <div class="sicon bg-indigo"><span class="material-icons">storage</span></div>
+                <div class="stext"><div class="stitle">Depolama</div><div class="ssub">62,4 GB / 128 GB kullanıldı</div></div>
+                <span class="material-icons sarrow">chevron_right</span>
+            </div>
+        </div>
+
+        <!-- Güvenlik -->
+        <div class="sblock">
+            <div class="sitem" data-kw="güvenlik kilit parmak" onclick="toast('Güvenlik ve gizlilik')">
+                <div class="sicon bg-blue"><span class="material-icons">security</span></div>
+                <div class="stext"><div class="stitle">Güvenlik ve gizlilik</div><div class="ssub">Biyometrik kilit açma açık</div></div>
+                <span class="material-icons sarrow">chevron_right</span>
+            </div>
+            <div class="sitem" data-kw="konum gps" onclick="toast('Konum')">
+                <div class="sicon bg-red"><span class="material-icons">location_on</span></div>
+                <div class="stext"><div class="stitle">Konum</div><div class="ssub">Açık</div></div>
+                <span class="material-icons sarrow">chevron_right</span>
+            </div>
+        </div>
+
+        <!-- Uygulamalar -->
+        <div class="sblock">
+            <div class="sitem" data-kw="uygulamalar" onclick="toast('Uygulamalar')">
+                <div class="sicon bg-purple"><span class="material-icons">apps</span></div>
+                <div class="stext"><div class="stitle">Uygulamalar</div><div class="ssub">127 uygulama yüklü</div></div>
+                <span class="material-icons sarrow">chevron_right</span>
+            </div>
+            <div class="sitem" data-kw="dijital denge ekran süresi" onclick="switchView('viewDenge')">
+                <div class="sicon bg-teal"><span class="material-icons">hourglass_empty</span></div>
+                <div class="stext"><div class="stitle">Dijital Denge ve ebeveyn...</div><div class="ssub">Bugün <span id="rootTotalTime">4 sa. 23 dk.</span></div></div>
+                <span class="material-icons sarrow">chevron_right</span>
+            </div>
+        </div>
+
+        <!-- Genel -->
+        <div class="sblock">
+            <div class="sitem" data-kw="genel yönetim dil" onclick="toast('Genel yönetim')">
+                <div class="sicon bg-grey"><span class="material-icons">settings</span></div>
+                <div class="stext"><div class="stitle">Genel yönetim</div></div>
+                <span class="material-icons sarrow">chevron_right</span>
+            </div>
+            <div class="sitem" data-kw="erişilebilirlik" onclick="toast('Erişilebilirlik')">
+                <div class="sicon bg-brown"><span class="material-icons">accessibility</span></div>
+                <div class="stext"><div class="stitle">Erişilebilirlik</div></div>
+                <span class="material-icons sarrow">chevron_right</span>
+            </div>
+            <div class="sitem" data-kw="güncelleme yazılım" onclick="toast('Yazılım güncellemesi')">
+                <div class="sicon bg-blue"><span class="material-icons">system_update</span></div>
+                <div class="stext"><div class="stitle">Yazılım güncellemesi</div><div class="ssub">Güncel</div></div>
+                <span class="material-icons sarrow">chevron_right</span>
+            </div>
+            <div class="sitem" data-kw="telefon hakkında model" onclick="toast('Telefon hakkında')">
+                <div class="sicon bg-grey"><span class="material-icons">phone_android</span></div>
+                <div class="stext"><div class="stitle">Telefon hakkında</div><div class="ssub">Samsung Galaxy A54 5G</div></div>
+                <span class="material-icons sarrow">chevron_right</span>
+            </div>
+            <div class="sitem" data-kw="google hesap" onclick="toast('Google')">
+                <div class="sicon bg-green"><span class="material-icons">g_translate</span></div>
+                <div class="stext"><div class="stitle">Google</div></div>
+                <span class="material-icons sarrow">chevron_right</span>
+            </div>
+        </div>
+        <div style="height:32px;"></div>
+    </div>
+</div>
+
+
+<!-- ========== DİJİTAL DENGE ========== -->
+<div id="viewDenge" class="view-container denge-bg">
+    <div class="header" style="background:#0d0d18;">
+        <button class="icon-btn" onclick="switchView('viewSettings')"><span class="material-icons">arrow_back</span></button>
+        <div style="flex-grow:1;"></div>
+        <button class="icon-btn" onclick="openPassword()"><span class="material-icons">more_vert</span></button>
+    </div>
+    <div class="large-header" style="background:#0d0d18; padding-bottom:16px;">
+        <h1>Dijital Denge ve<br>ebeveyn<br>denetimleri</h1>
+    </div>
+
+    <div class="content">
+        <div class="denge-section">
+            <span class="material-icons" style="color:#9c89cc; font-size:22px;">bar_chart</span>
+            <span>Dijital Denge araçlarınız</span>
+        </div>
+
+        <!-- Donut Chart -->
+        <div class="donut-wrap">
+            <svg id="donutSvg" width="260" height="260" viewBox="0 0 260 260"></svg>
+            <div class="donut-center">
+                <div class="donut-label">BUGÜN</div>
+                <div class="donut-time" id="dengeTotal">4 sa. 23 dk.</div>
+            </div>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-box">
+                <div class="stat-num">66</div>
+                <div class="stat-lbl">Kilit açma</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-num">121</div>
+                <div class="stat-lbl">Bildirim</div>
+            </div>
+        </div>
+
+        <div class="denge-link" onclick="switchView('viewDetails')">
+            <div class="denge-link-text">Uygulama etkinliği ayrıntılarını göster</div>
+            <span class="material-icons" style="color:#a8c7fa;font-size:20px;">chevron_right</span>
+        </div>
+
+        <div class="section-hdr">Telefonla ilişkinizi kesmenin yolları</div>
+
+        <div class="denge-item" onclick="toast('Uygulama zamanlayıcıları')">
+            <span class="material-icons" style="color:#888;">timer</span>
+            <div class="denge-item-text">
+                <div class="denge-item-title">Uygulama zamanlayıcıları</div>
+                <div class="denge-item-sub">Süre ölçerler ayarlanmadı</div>
+            </div>
+            <span class="material-icons sarrow">chevron_right</span>
+        </div>
+        <div class="denge-item" onclick="toast('Uyku Vakti modu')">
+            <span class="material-icons" style="color:#888;">bedtime</span>
+            <div class="denge-item-text">
+                <div class="denge-item-title">Uyku Vakti modu</div>
+                <div class="denge-item-sub">Ayarlamak için dokunun</div>
+            </div>
+            <span class="material-icons sarrow">chevron_right</span>
+        </div>
+        <div class="denge-item" onclick="toast('Konsantrasyon')">
+            <span class="material-icons" style="color:#888;">center_focus_strong</span>
+            <div class="denge-item-text">
+                <div class="denge-item-title">Konsantrasyon</div>
+                <div class="denge-item-sub">Ayarlamak için dokunun</div>
+            </div>
+            <span class="material-icons sarrow">chevron_right</span>
+        </div>
+        <div style="height:32px;"></div>
+    </div>
+</div>
+
+
+<!-- ========== UYGULAMA ETKİNLİĞİ AYRINTILARI ========== -->
+<div id="viewDetails" class="view-container denge-bg">
+    <div class="header" style="background:#0d0d18;">
+        <button class="icon-btn" onclick="switchView('viewDenge')"><span class="material-icons">arrow_back</span></button>
+        <span style="flex-grow:1; font-size:17px; color:#ccc; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Uygulama etkinliği ayrın...</span>
+        <button class="icon-btn" onclick="openPassword()"><span class="material-icons">more_vert</span></button>
+    </div>
+
+    <div class="content">
+        <div class="large-header" style="background:#0d0d18; padding-bottom:8px;">
+            <h1>Uygulama etkinliği<br>ayrıntıları</h1>
+        </div>
+
+        <div style="padding: 8px 24px 0;">
+            <button class="filter-btn" style="margin:0 0 12px;">
+                Ekran başında kalma süresi <span class="material-icons" style="font-size:16px;">arrow_drop_down</span>
+            </button>
+        </div>
+
+        <div class="details-time-big" id="detailsBigTime">4 sa. 23 dk.</div>
+        <div class="details-time-label" id="detailsDayLabel">Bugün</div>
+
+        <!-- Bar Chart -->
+        <div class="bar-chart-wrap">
+            <div class="chart-grid" id="chartGrid"></div>
+            <div class="bars-row" id="barsRow"></div>
+        </div>
+
+        <!-- Gün nav -->
+        <div class="day-nav">
+            <button class="day-nav-btn" id="btnPrev" onclick="changeDay(-1)">
+                <span class="material-icons" style="font-size:18px;">chevron_left</span>
+                <span style="font-size:14px;"></span>
+            </button>
+            <div class="day-nav-text" id="dayNavText">22 Nisan Çar</div>
+            <button class="day-nav-btn" id="btnNext" onclick="changeDay(1)">
+                <span style="font-size:14px;"></span>
+                <span class="material-icons" style="font-size:18px;">chevron_right</span>
+            </button>
+        </div>
+
+        <div id="appListContainer"></div>
+        <div style="height:32px;"></div>
+    </div>
+</div>
+
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- Password Overlay -->
+<div class="overlay" id="passOverlay">
+    <div class="modal">
+        <h2>Şifre Girin</h2>
+        <input type="password" id="passInput" placeholder="Şifre...">
+        <div class="modal-btns">
+            <button class="mbtn" onclick="closeOverlay('passOverlay')">İptal</button>
+            <button class="mbtn primary" onclick="checkPassword()">Tamam</button>
+        </div>
+    </div>
+</div>
+
+<!-- Admin Overlay -->
+<div class="overlay" id="adminOverlay">
+    <div class="modal">
+        <h2>Süreleri Düzenle</h2>
+        <div class="admin-scroll" id="adminContent"></div>
+        <div class="modal-btns">
+            <button class="mbtn" onclick="closeOverlay('adminOverlay')">İptal</button>
+            <button class="mbtn primary" onclick="saveAdmin()">Kaydet</button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+// ===== APP İKONLARI (SVG/emoji tabanlı) =====
+const APP_ICONS = {
+    instagram: `<svg width="44" height="44" viewBox="0 0 44 44"><defs><radialGradient id="ig" cx="30%" cy="107%" r="130%"><stop offset="0%" stop-color="#fdf497"/><stop offset="5%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><rect width="44" height="44" rx="12" fill="url(#ig)"/><rect x="11" y="11" width="22" height="22" rx="6" fill="none" stroke="white" stroke-width="2.2"/><circle cx="22" cy="22" r="6" fill="none" stroke="white" stroke-width="2.2"/><circle cx="30.5" cy="13.5" r="1.5" fill="white"/></svg>`,
+    google: `<svg width="44" height="44" viewBox="0 0 44 44"><rect width="44" height="44" rx="12" fill="white"/><text x="22" y="30" text-anchor="middle" font-size="24" font-family="Arial" font-weight="bold"><tspan fill="#4285F4">G</tspan></text><path d="M33 22c0-1-.1-1.7-.2-2.5H22v4.7h6.2c-.3 1.4-1.1 2.6-2.3 3.4v2.8h3.7C31.8 28.3 33 25.4 33 22z" fill="#4285F4"/><path d="M22 34c3.1 0 5.7-1 7.6-2.8l-3.7-2.8c-1 .7-2.3 1.1-3.9 1.1-3 0-5.5-2-6.4-4.7H11.8v2.9C13.7 31.4 17.6 34 22 34z" fill="#34A853"/><path d="M15.6 24.8c-.2-.7-.4-1.5-.4-2.3s.1-1.6.4-2.3v-2.9H11.8C11 19.2 10.5 20.6 10.5 22.5s.5 3.3 1.3 4.6l3.8-2.3z" fill="#FBBC04"/><path d="M22 15.5c1.7 0 3.2.6 4.4 1.7l3.3-3.3C27.7 12 25.1 11 22 11c-4.4 0-8.3 2.6-10.2 6.4l3.8 2.9C16.5 17.5 19 15.5 22 15.5z" fill="#EA4335"/></svg>`,
+    whatsapp: `<svg width="44" height="44" viewBox="0 0 44 44"><rect width="44" height="44" rx="12" fill="#25D366"/><path d="M22 10C15.4 10 10 15.4 10 22c0 2.1.6 4.2 1.6 5.9L10 34l6.3-1.6C18 33.4 20 34 22 34c6.6 0 12-5.4 12-12S28.6 10 22 10zm6.2 16.5c-.3.8-1.5 1.5-2 1.6-.5.1-1.1.1-3.4-1.4-2.8-1.8-4.6-4.8-4.7-5-.2-.3-1.3-1.7-1.3-3.3s.8-2.3 1.1-2.6c.3-.3.6-.4.8-.4h.6c.2 0 .5 0 .7.5.3.7 1 2.4 1.1 2.6.1.2.1.4 0 .6-.1.2-.2.4-.4.6-.2.2-.4.5-.5.6.2.3.8 1.3 1.7 2.1 1.1.9 2 1.3 2.3 1.4.3-.4.7-.9.9-1.1.2-.2.4-.2.6-.1l1.9.9c.2.1.3.2.4.3 0 .3-.1 1.1-.4 1.7z" fill="white"/></svg>`,
+    capcut: `<svg width="44" height="44" viewBox="0 0 44 44"><rect width="44" height="44" rx="12" fill="#1C1C1E"/><rect x="12" y="12" width="20" height="20" rx="4" fill="none" stroke="white" stroke-width="2"/><line x1="22" y1="12" x2="22" y2="32" stroke="white" stroke-width="2"/><polygon points="19,18 27,22 19,26" fill="white"/></svg>`,
+    animecix: `<svg width="44" height="44" viewBox="0 0 44 44"><rect width="44" height="44" rx="12" fill="#1a1a2e"/><path d="M22 10 L34 30 L10 30 Z" fill="none" stroke="white" stroke-width="2.5"/><path d="M22 16 L30 28 L14 28 Z" fill="white" opacity="0.6"/></svg>`,
+    youtube: `<svg width="44" height="44" viewBox="0 0 44 44"><rect width="44" height="44" rx="12" fill="#FF0000"/><path d="M34.5 16.5s-.3-2.2-1.4-3.1c-1.3-1.4-2.8-1.4-3.5-1.5C25.5 11.7 22 11.7 22 11.7s-3.5 0-7.6.2c-.7.1-2.2.1-3.5 1.5-1 .9-1.4 3.1-1.4 3.1S9.2 19 9.2 21.5v2.3c0 2.5.3 5 .3 5s.3 2.2 1.4 3.1c1.3 1.4 3.1 1.3 3.8 1.5 2.8.2 11.8.3 11.8.3s3.5 0 7.6-.3c.7-.1 2.2-.1 3.5-1.5 1-.9 1.4-3.1 1.4-3.1s.3-2.5.3-5v-2.3c0-2.5-.3-5-.3-5zm-14.8 10.2v-8.7l9.5 4.4-9.5 4.3z" fill="white"/></svg>`,
+    cheatglobal: `<svg width="44" height="44" viewBox="0 0 44 44"><rect width="44" height="44" rx="12" fill="#1a1a1a"/><text x="22" y="29" text-anchor="middle" font-size="18" font-weight="bold" font-family="Arial" fill="#2ecc71">CG</text></svg>`,
+    claude: `<svg width="44" height="44" viewBox="0 0 44 44"><rect width="44" height="44" rx="12" fill="#D97757"/><path d="M22 10 C16 10 12 14 12 20 C12 24 14 27 18 29 L16 34 L22 30 C28 30 32 26 32 20 C32 14 28 10 22 10Z" fill="white" opacity="0.9"/><circle cx="18" cy="20" r="2" fill="#D97757"/><circle cx="22" cy="20" r="2" fill="#D97757"/><circle cx="26" cy="20" r="2" fill="#D97757"/></svg>`,
+    chatgpt: `<svg width="44" height="44" viewBox="0 0 44 44"><rect width="44" height="44" rx="12" fill="#10A37F"/><path d="M33.5 20.5c.5-1.4.3-3-.5-4.2-1.3-1.9-3.5-2.8-5.7-2.4-.8-1.1-2-1.8-3.3-2-2.2-.3-4.2.9-5.1 2.9-1.5.3-2.7 1.2-3.5 2.5-.9 1.8-.7 4 .5 5.5-.5 1.4-.3 3 .5 4.2 1.3 1.9 3.5 2.8 5.7 2.4.8 1.1 2 1.8 3.3 2 2.2.3 4.2-.9 5.1-2.9 1.5-.3 2.7-1.2 3.5-2.5.9-1.8.7-4-.5-5.5zm-8.5 7c-.9 0-1.7-.3-2.4-.8l.1-.1 4-2.3c.2-.1.3-.3.3-.5v-5.7l1.7 1c0 .1 0 .1.1.2v4.6c0 2-1.7 3.6-3.8 3.6z" fill="white"/></svg>`,
+    ayarlar: `<svg width="44" height="44" viewBox="0 0 44 44"><rect width="44" height="44" rx="12" fill="#444"/><path d="M22 16a6 6 0 100 12 6 6 0 000-12zm9.7 4.6l-1.5-.2c-.2-.5-.4-1-.7-1.5l.9-1.2c.3-.4.3-1-.1-1.4l-2.5-2.5c-.4-.4-1-.4-1.4-.1l-1.2.9c-.5-.3-1-.5-1.5-.7l-.2-1.5c-.1-.5-.5-.9-1-.9h-3.5c-.5 0-.9.4-1 .9l-.2 1.5c-.5.2-1 .4-1.5.7l-1.2-.9c-.4-.3-1-.3-1.4.1l-2.5 2.5c-.4.4-.4 1-.1 1.4l.9 1.2c-.3.5-.5 1-.7 1.5l-1.5.2c-.5.1-.9.5-.9 1v3.5c0 .5.4.9.9 1l1.5.2c.2.5.4 1 .7 1.5l-.9 1.2c-.3.4-.3 1 .1 1.4l2.5 2.5c.4.4 1 .4 1.4.1l1.2-.9c.5.3 1 .5 1.5.7l.2 1.5c.1.5.5.9 1 .9h3.5c.5 0 .9-.4 1-.9l.2-1.5c.5-.2 1-.4 1.5-.7l1.2.9c.4.3 1 .3 1.4-.1l2.5-2.5c.4-.4.4-1 .1-1.4l-.9-1.2c.3-.5.5-1 .7-1.5l1.5-.2c.5-.1.9-.5.9-1v-3.5c0-.5-.4-.9-.9-1z" fill="white"/></svg>`,
+    telefon: `<svg width="44" height="44" viewBox="0 0 44 44"><rect width="44" height="44" rx="12" fill="#1565c0"/><path d="M30 27.6c-1.2 1.2-2.8 1.8-4.3 1.8-1.3 0-2.6-.4-3.7-1.1-3.1-1.9-5.8-4.6-7.7-7.7C13.4 19.5 13 18.2 13 16.9c0-1.5.6-3 1.8-4.1l.7-.7c.4-.4 1-.4 1.4 0l3 3c.4.4.4 1 0 1.4l-1.4 1.4c.8 1.8 2.2 3.2 4 4l1.4-1.4c.4-.4 1-.4 1.4 0l3 3c.4.4.4 1 0 1.4l-.3.7z" fill="white"/></svg>`,
+};
+
+// Uygulama renkleri donut için
+const APP_COLORS = {
+    instagram: '#E1306C',
+    google: '#4285F4',
+    whatsapp: '#25D366',
+    capcut: '#aaaaaa',
+    animecix: '#7e57c2',
+    youtube: '#FF0000',
+    cheatglobal: '#2ecc71',
+    claude: '#D97757',
+    chatgpt: '#10A37F',
+    ayarlar: '#757575',
+    telefon: '#1565c0',
+};
+
+// ===== VERİ =====
+// Bugün = 22 Nisan 2026 (Çarşamba = gün indeksi 3, Pzt=0)
+// Haftanın günleri: Pzt(0), Sal(1), Çar(2), Per(3), Cum(4), Cmt(5), Paz(6)
+// Bugün Çar yani indeks 2
+
+const TODAY = new Date();
+const TODAY_DATE = new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate());
+
+// Her gün için farklı veri üret (seed tabanlı deterministik random)
+function seededRand(seed) {
+    let x = Math.sin(seed) * 10000;
+    return x - Math.floor(x);
+}
+
+function generateDayApps(dayOffset) {
+    // dayOffset: 0=bugün, -1=dün, -2=evvelsi gün...
+    const seed = Math.abs(dayOffset) * 137 + 42;
+    const baseApps = [
+        { id: 'instagram', name: 'Instagram' },
+        { id: 'google', name: 'Google' },
+        { id: 'whatsapp', name: 'WhatsApp' },
+        { id: 'capcut', name: 'CapCut' },
+        { id: 'animecix', name: 'AnimeciX' },
+        { id: 'youtube', name: 'YouTube' },
+        { id: 'cheatglobal', name: 'CheatGlobal' },
+        { id: 'claude', name: 'Claude' },
+        { id: 'chatgpt', name: 'ChatGPT' },
+        { id: 'ayarlar', name: 'Ayarlar' },
+        { id: 'telefon', name: 'Telefon' },
+    ];
+
+    // Bugün için sabit veri
+    if (dayOffset === 0) {
+        return [
+            { id: 'instagram', name: 'Instagram', mins: 90 },
+            { id: 'google', name: 'Google', mins: 52 },
+            { id: 'whatsapp', name: 'WhatsApp', mins: 34 },
+            { id: 'capcut', name: 'CapCut', mins: 32 },
+            { id: 'animecix', name: 'AnimeciX', mins: 16 },
+            { id: 'youtube', name: 'YouTube', mins: 9 },
+            { id: 'cheatglobal', name: 'CheatGlobal', mins: 8 },
+            { id: 'claude', name: 'Claude', mins: 6 },
+            { id: 'chatgpt', name: 'ChatGPT', mins: 3 },
+            { id: 'ayarlar', name: 'Ayarlar', mins: 2 },
+            { id: 'telefon', name: 'Telefon', mins: 2 },
+        ];
+    }
+
+    // Diğer günler için seed'e göre
+    return baseApps.map((app, i) => {
+        const r1 = seededRand(seed + i * 17);
+        const r2 = seededRand(seed + i * 31 + 7);
+        let mins;
+        if (i === 0) mins = Math.floor(80 + r1 * 120); // instagram hep yüksek
+        else if (i === 1) mins = Math.floor(30 + r2 * 90);
+        else mins = Math.floor(r1 * 60 + r2 * 20);
+        return { ...app, mins };
+    }).sort((a, b) => b.mins - a.mins);
+}
+
+function minsToStr(mins) {
+    if (mins >= 60) {
+        const h = Math.floor(mins / 60);
+        const m = mins % 60;
+        return m > 0 ? `${h} sa. ${m} dk.` : `${h} sa.`;
+    }
+    return `${mins} dakika`;
+}
+
+function totalMins(apps) {
+    return apps.reduce((s, a) => s + a.mins, 0);
+}
+
+// Admin state
+let state = {
+    todayApps: generateDayApps(0),
+    totalTime: null, // null = otomatik hesapla
+};
+
+function loadState() {
+    const saved = localStorage.getItem('ayarlarState');
+    if (saved) try { state = JSON.parse(saved); } catch(e) {}
+    if (!state.todayApps) state.todayApps = generateDayApps(0);
+    updateDengeUI();
+}
+
+function saveState() {
+    localStorage.setItem('ayarlarState', JSON.stringify(state));
+}
+
+function getTodayTotal() {
+    return state.totalTime || minsToStr(totalMins(state.todayApps));
+}
+
+function updateDengeUI() {
+    const total = getTodayTotal();
+    document.getElementById('dengeTotal').innerText = total;
+    document.getElementById('rootTotalTime').innerText = total;
+    drawDonut(state.todayApps);
+}
+
+// ===== DONUT CHART =====
+function drawDonut(apps) {
+    const svg = document.getElementById('donutSvg');
+    svg.innerHTML = '';
+    const cx = 130, cy = 130, r = 110, strokeW = 18;
+    const total = totalMins(apps);
+    const circ = 2 * Math.PI * r;
+
+    // Background circle
+    const bg = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    bg.setAttribute('cx', cx); bg.setAttribute('cy', cy); bg.setAttribute('r', r);
+    bg.setAttribute('fill', 'none'); bg.setAttribute('stroke', '#1e1e2e');
+    bg.setAttribute('stroke-width', strokeW);
+    svg.appendChild(bg);
+
+    // Label positions around circle
+    const labelPositions = [];
+    let startAngle = -Math.PI / 2;
+
+    const topApps = apps.slice(0, 6);
+    const otherMins = apps.slice(6).reduce((s,a) => s + a.mins, 0);
+    const chartApps = [...topApps];
+    if (otherMins > 0) chartApps.push({ id: 'other', name: 'Diğer', mins: otherMins, color: '#00bcd4' });
+
+    chartApps.forEach((app, i) => {
+        const color = APP_COLORS[app.id] || '#00bcd4';
+        const frac = app.mins / total;
+        const dashLen = frac * circ - 3;
+        const midAngle = startAngle + frac * Math.PI;
+
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', cx); circle.setAttribute('cy', cy); circle.setAttribute('r', r);
+        circle.setAttribute('fill', 'none');
+        circle.setAttribute('stroke', color);
+        circle.setAttribute('stroke-width', strokeW);
+        circle.setAttribute('stroke-dasharray', `${dashLen} ${circ}`);
+        circle.setAttribute('stroke-dashoffset', -startAngle * r);
+        circle.setAttribute('transform', `rotate(${startAngle * 180 / Math.PI + 90} ${cx} ${cy})`);
+        svg.appendChild(circle);
+
+        // Label
+        if (frac > 0.05) {
+            const lx = cx + (r + 30) * Math.cos(midAngle);
+            const ly = cy + (r + 30) * Math.sin(midAngle);
+            labelPositions.push({ name: app.name, x: lx, y: ly, color });
+        }
+
+        startAngle += frac * 2 * Math.PI;
+    });
+
+    // Draw labels
+    labelPositions.forEach(lbl => {
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', lbl.x);
+        text.setAttribute('y', lbl.y);
+        text.setAttribute('fill', lbl.color);
+        text.setAttribute('font-size', '11');
+        text.setAttribute('font-family', 'Roboto, sans-serif');
+        text.setAttribute('text-anchor', lbl.x > cx ? 'start' : 'end');
+        text.setAttribute('dominant-baseline', 'middle');
+        text.textContent = lbl.name;
+        svg.appendChild(text);
+    });
+}
+
+// ===== GÜN NAVİGASYONU =====
+let currentDayOffset = 0; // 0=bugün, -1=dün, ...
+const MIN_DAY_OFFSET = -6; // Haftanın ilk günü
+
+function getDayDate(offset) {
+    const d = new Date(TODAY_DATE);
+    d.setDate(d.getDate() + offset);
+    return d;
+}
+
+function getDayLabel(offset) {
+    const months = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+    const days = ['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'];
+    const d = getDayDate(offset);
+    return `${d.getDate()} ${months[d.getMonth()]} ${days[d.getDay()]}`;
+}
+
+function getDayRelLabel(offset) {
+    if (offset === 0) return 'Bugün';
+    if (offset === -1) return 'Dün';
+    if (offset === -2) return 'Evvelsi gün';
+    return getDayLabel(offset);
+}
+
+// Bar verileri (haftanın her günü için)
+function getWeekBarData() {
+    // Haftanın Pazartesi'sini bul
+    const today = new Date(TODAY_DATE);
+    const dayOfWeek = today.getDay(); // 0=Paz, 1=Pzt...
+    const mondayOffset = dayOfWeek === 0 ? -6 : -(dayOfWeek - 1);
+
+    const bars = [];
+    for (let i = 0; i < 7; i++) {
+        const offset = mondayOffset + i;
+        const isFuture = offset > 0;
+        let mins = 0;
+        if (!isFuture) {
+            if (offset === 0) {
+                mins = totalMins(state.todayApps);
+            } else {
+                const apps = generateDayApps(offset);
+                mins = totalMins(apps);
+            }
+        }
+        bars.push({ offset, mins, isFuture, isToday: offset === 0 });
+    }
+    return bars;
+}
+
+function renderBarChart(selectedOffset) {
+    const bars = getWeekBarData();
+    const maxMins = Math.max(...bars.filter(b => !b.isFuture).map(b => b.mins), 1);
+    const dayNames = ['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
+
+    const barsRow = document.getElementById('barsRow');
+    barsRow.innerHTML = '';
+
+    bars.forEach((bar, i) => {
+        const heightPct = bar.isFuture ? 0 : (bar.mins / maxMins) * 90;
+        const isSelected = bar.offset === selectedOffset;
+        const item = document.createElement('div');
+        item.className = 'bar-item';
+        item.style.cursor = bar.isFuture ? 'default' : 'pointer';
+        item.onclick = bar.isFuture ? null : () => changeDay(bar.offset - currentDayOffset);
+
+        const fill = document.createElement('div');
+        fill.className = 'bar-fill ' + (bar.isFuture ? 'future-bar' : isSelected ? 'active-bar' : 'faded-bar');
+        fill.style.height = heightPct + '%';
+
+        const lbl = document.createElement('div');
+        lbl.className = 'bar-day ' + (isSelected ? 'active-day' : '');
+        lbl.innerText = dayNames[i];
+
+        item.appendChild(fill);
+        item.appendChild(lbl);
+        barsRow.appendChild(item);
+    });
+
+    // Grid lines
+    const grid = document.getElementById('chartGrid');
+    grid.innerHTML = '';
+    [0, 25, 50, 75, 100].forEach((pct, i) => {
+        const line = document.createElement('div');
+        line.className = 'grid-line';
+        line.style.bottom = (pct * 0.9) + '%';
+        grid.appendChild(line);
+    });
+}
+
+function renderDayApps(offset) {
+    let apps;
+    if (offset === 0) apps = state.todayApps;
+    else apps = generateDayApps(offset);
+
+    const container = document.getElementById('appListContainer');
+    container.innerHTML = '';
+
+    const total = totalMins(apps);
+
+    apps.forEach(app => {
+        const item = document.createElement('div');
+        item.className = 'app-list-item';
+
+        const iconDiv = document.createElement('div');
+        iconDiv.className = 'app-real-icon';
+        iconDiv.innerHTML = APP_ICONS[app.id] || `<div style="width:44px;height:44px;border-radius:12px;background:#333;display:flex;align-items:center;justify-content:center;font-weight:bold;">${app.name[0]}</div>`;
+
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'app-info';
+        infoDiv.innerHTML = `<div class="app-name">${app.name}</div><div class="app-time">${minsToStr(app.mins)}</div>`;
+
+        const timerIcon = document.createElement('span');
+        timerIcon.className = 'material-icons timer-icon';
+        timerIcon.innerText = 'hourglass_empty';
+
+        item.appendChild(iconDiv);
+        item.appendChild(infoDiv);
+        item.appendChild(timerIcon);
+        container.appendChild(item);
+    });
+}
+
+function changeDay(delta) {
+    const newOffset = currentDayOffset + delta;
+    if (newOffset > 0 || newOffset < MIN_DAY_OFFSET) return;
+    currentDayOffset = newOffset;
+    updateDetailsView();
+}
+
+function updateDetailsView() {
+    const offset = currentDayOffset;
+    let apps;
+    if (offset === 0) apps = state.todayApps;
+    else apps = generateDayApps(offset);
+
+    const total = totalMins(apps);
+    const totalStr = offset === 0 ? getTodayTotal() : minsToStr(total);
+
+    document.getElementById('detailsBigTime').innerText = totalStr;
+    document.getElementById('detailsDayLabel').innerText = getDayRelLabel(offset);
+    document.getElementById('dayNavText').innerText = getDayLabel(offset);
+
+    document.getElementById('btnPrev').disabled = offset <= MIN_DAY_OFFSET;
+    document.getElementById('btnNext').disabled = offset >= 0;
+
+    renderBarChart(offset);
+    renderDayApps(offset);
+}
+
+// ===== VİEW GEÇİŞLERİ =====
+function switchView(id) {
+    document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0, 0);
+
+    if (id === 'viewDetails') {
+        currentDayOffset = 0;
+        updateDetailsView();
+    }
+    if (id === 'viewSettings') {
+        const s = document.getElementById('settingsSearch');
+        if (s) { s.value = ''; filterSettings(); }
+    }
+}
+
+// ===== ARAMA =====
+function filterSettings() {
+    const q = document.getElementById('settingsSearch').value.toLowerCase();
+    document.querySelectorAll('.sitem').forEach(item => {
+        const kw = item.getAttribute('data-kw') || '';
+        const title = item.querySelector('.stitle')?.innerText.toLowerCase() || '';
+        item.style.display = (kw.includes(q) || title.includes(q)) ? 'flex' : 'none';
+    });
+    document.querySelectorAll('.sblock').forEach(block => {
+        const items = block.querySelectorAll('.sitem');
+        if (!items.length) return;
+        let vis = false;
+        items.forEach(i => { if (i.style.display !== 'none') vis = true; });
+        block.style.display = vis ? '' : 'none';
+    });
+}
+
+// ===== TOAST =====
+let toastTimer;
+function toast(msg) {
+    const el = document.getElementById('toast');
+    el.innerText = msg; el.style.display = 'block';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.style.display = 'none', 1600);
+}
+
+// ===== ŞİFRE & ADMİN =====
+function openPassword() {
+    document.getElementById('passInput').value = '';
+    document.getElementById('passOverlay').style.display = 'flex';
+    setTimeout(() => document.getElementById('passInput').focus(), 100);
+}
+
+function closeOverlay(id) {
+    document.getElementById(id).style.display = 'none';
+    if (id === 'passOverlay') document.getElementById('passInput').blur();
+}
+
+function checkPassword() {
+    if (document.getElementById('passInput').value.toLowerCase() === 'capcuklar') {
+        closeOverlay('passOverlay');
+        openAdmin();
+    } else {
+        toast('Yanlış şifre!');
+    }
+}
+
+document.getElementById('passInput').addEventListener('keypress', e => {
+    if (e.key === 'Enter') checkPassword();
+});
+
+function openAdmin() {
+    const c = document.getElementById('adminContent');
+    c.innerHTML = '';
+
+    // Toplam süre
+    const totalRow = document.createElement('div');
+    totalRow.className = 'admin-row';
+    totalRow.innerHTML = `<label>Toplam Süre (boş=otomatik)</label><input type="text" id="adminTotal" value="${state.totalTime || ''}" placeholder="örn: 4 sa. 23 dk.">`;
+    c.appendChild(totalRow);
+
+    // Uygulamalar
+    state.todayApps.forEach((app, i) => {
+        const row = document.createElement('div');
+        row.className = 'admin-row';
+        row.innerHTML = `<label>${app.name}</label><input type="text" id="adminApp_${i}" value="${minsToStr(app.mins)}" placeholder="dakika sayısı">`;
+        c.appendChild(row);
+    });
+
+    document.getElementById('adminOverlay').style.display = 'flex';
+}
+
+function parseTimeStr(str) {
+    str = str.trim();
+    // "2 sa. 30 dk." veya "45 dakika" veya "90"
+    let total = 0;
+    const saMatch = str.match(/(\d+)\s*sa/);
+    const dkMatch = str.match(/(\d+)\s*d[ak]/);
+    if (saMatch) total += parseInt(saMatch[1]) * 60;
+    if (dkMatch) total += parseInt(dkMatch[1]);
+    if (!saMatch && !dkMatch) total = parseInt(str) || 0;
+    return total;
+}
+
+function saveAdmin() {
+    const totalStr = document.getElementById('adminTotal').value.trim();
+    state.totalTime = totalStr || null;
+
+    state.todayApps.forEach((app, i) => {
+        const inp = document.getElementById(`adminApp_${i}`);
+        if (inp) app.mins = parseTimeStr(inp.value);
+    });
+
+    // Sırala
+    state.todayApps.sort((a, b) => b.mins - a.mins);
+
+    // Eğer toplam boşsa otomatik hesapla
+    if (!state.totalTime) {
+        state.totalTime = null; // otomatik
+    }
+
+    saveState();
+    updateDengeUI();
+    closeOverlay('adminOverlay');
+    toast('Kaydedildi!');
+}
+
+// ===== INIT =====
+loadState();
+</script>
+</body>
+</html>
